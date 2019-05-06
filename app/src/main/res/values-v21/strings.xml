@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_notification_channel_id">CanalFCM</string>
+    <string name="ingresa_nombre">Ingresa tu nombre</string>
+    <string name="recordar_datos">¿Recordar los datos ingresados?</string>
+    <string name="usar_google_map">Usar Google Maps</string>
+    <string name="agregar">agregar</string>
+    <string name="comprar">Comprar</string>
+    <string name="gracias_compra">Gracias por confiar en nosotros</string>
+    <string name="nuestros_pagos">El servicio será en contra entrega, para facilitar el servicio de entrega y recepción del valor a pagar, te invitamos a que ingreses la denominación de dinero con el que pagarás</string>
+    <string name="monto_pagar">Monto a pagar</string>
+    <string name="pagare_con">Pagaré con</string>
+    <string name="finalizar">Finalizar</string>
+    <string name="seleccionar_categoria">Selecciona una categoría</string>
+    <string name="promociones">Promociones!</string>
+    <string name="punto_referencia">Agregar punto de referencia</string>
+    <string name="mi_pedido">Mi pedido</string>
+    <string name="total_pagar">Total a pagar</string>
+    <string name="agregar_nota">Nota</string>
+    <string name="fecha">Fecha</string>
+    <string name="cliente">Cliente</string>
+    <string name="numero_telefono">Télefono</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="texto_nota">Escribe la nota para este pedido</string>
+    <string name="lista_favoritos">Mis favoritos</string>
+    <string name="lista_pedidos">Mis pedidos</string>
+    <string name="mis_datos">Mis datos</string>
+    <string name="comentarios">Comentarios</string>
+    <string name="cuenta">Mis cuenta</string>
+    <string name="inicio">Inicio</string>
+    <string name="soporte">Soporte</string>
+    <string name="ayuda">Ayuda</string>
+    <string name="pagar_completo">Pagar completo</string>
+    <string name="cargando">Cargando...</string>
+    <string name="descuento">Promociones</string>
+    <string name="contacto">Contacto</string>
+    <string name="todos_productos">Todos los productos</string>
+</resources>

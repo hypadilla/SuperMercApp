@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "247066170874",
+    "firebase_url": "https://supermercapp-d33cb.firebaseio.com",
+    "project_id": "supermercapp-d33cb",
+    "storage_bucket": "supermercapp-d33cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247066170874:android:b670f543043b9704",
+        "android_client_info": {
+          "package_name": "com.softwo.supermercapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247066170874-9cat1i2d79j3gds4nke7n3tb0tur1eku.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softwo.supermercapp",
+            "certificate_hash": "469d16720a438ea9ed5fd078b2c6cced0c6d7550"
+          }
+        },
+        {
+          "client_id": "247066170874-4v5518b8tevs1vpfgis2velaef6mg9lk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2KmFa8I81fn7qErIpQ_QrcT5zv2rJq7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247066170874-4v5518b8tevs1vpfgis2velaef6mg9lk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

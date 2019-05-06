@@ -1,0 +1,60 @@
+<resources>
+    <string name="default_notification_channel_id">CanalFCM</string>
+    <string name="app_name">Super MercApp</string>
+    <string name="company">SOFTWO CO.</string>
+    <string name="comprobando_conexion">Comprobando conexión...</string>
+    <string name="ingresar_direccion">Ingresa tu dirección</string>
+    <string name="recoleccion_informacion">Recolección de Información</string>
+    <string name="recordar_datos">¿Recordar los datos ingresados?</string>
+    <string name="ingresar_numero_telefono">Ingresa tu número de télefono</string>
+    <string name="campo_obligatorio">* Este campo es obligatorio *</string>
+    <string name="campo_opcional">Este campo es opcional</string>
+    <string name="continuar">Continuar</string>
+    <string name="title_activity_end">Bienvenido</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_subtitle">Servicio a domicilio contra entrega</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_cartshop">Carrito de compras</string>
+    <string name="ingresa_nombre">Ingresa tu nombre</string>
+    <string name="usar_google_map">Usar Google Maps</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="agregar">agregar</string>
+    <string name="comprar">Comprar</string>
+    <string name="gracias_compra">Gracias por confiar en nosotros</string>
+    <string name="nuestros_pagos">El servicio será en contra entrega, para facilitar el servicio de entrega y recepción del valor a pagar, te invitamos a que ingreses la denominación de dinero con el que pagarás</string>
+    <string name="monto_pagar">Monto a pagar</string>
+    <string name="pagare_con">Pagaré con</string>
+    <string name="finalizar">Finalizar</string>
+    <string name="seleccionar_categoria">Selecciona una categoría</string>
+    <string name="promociones">Promociones!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="punto_referencia">Agregar punto de referencia</string>
+    <string name="mi_pedido">Mi pedido</string>
+    <string name="total_pagar">Total a pagar</string>
+    <string name="agregar_nota">Nota</string>
+    <string name="fecha">Fecha</string>
+    <string name="cliente">Cliente</string>
+    <string name="numero_telefono">Télefono</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="texto_nota">Escribe la nota para este pedido</string>
+    <string name="lista_favoritos">Mis favoritos</string>
+    <string name="lista_pedidos">Mis pedidos</string>
+    <string name="mis_datos">Mis datos</string>
+    <string name="comentarios">Comentarios</string>
+    <string name="cuenta">Mis cuenta</string>
+    <string name="inicio">Inicio</string>
+    <string name="soporte">Soporte</string>
+    <string name="ayuda">Ayuda</string>
+    <string name="pagar_completo">Pagar completo</string>
+    <string name="cargando">Cargando...</string>
+    <string name="descuento">Promociones</string>
+    <string name="contacto">Contacto</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="todos_productos">Todos los productos</string>
+
+</resources>

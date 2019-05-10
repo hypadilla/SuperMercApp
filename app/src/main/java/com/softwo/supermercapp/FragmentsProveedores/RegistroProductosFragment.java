@@ -1,6 +1,8 @@
 package com.softwo.supermercapp.FragmentsProveedores;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -64,12 +66,9 @@ public class RegistroProductosFragment extends Fragment {
     String categoriaSeleccionada;
     String unidadmedidaSeleccionada;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String KEY = "ProductKey";
 
-    // TODO: Rename and change types of parameters
-    private int mProductKey;
+    private String mProductKey;
 
     private OnFragmentInteractionListener mListener;
 
@@ -77,18 +76,11 @@ public class RegistroProductosFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment RegistroProductosFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RegistroProductosFragment newInstance(int param1) {
+
+    public static RegistroProductosFragment newInstance(String param1) {
         RegistroProductosFragment fragment = new RegistroProductosFragment();
         Bundle args = new Bundle();
-        args.putInt( KEY, param1 );
+        args.putString( KEY, param1 );
         fragment.setArguments( args );
         return fragment;
     }
@@ -97,15 +89,16 @@ public class RegistroProductosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         if (getArguments() != null) {
-            mProductKey = getArguments().getInt( KEY );
+            mProductKey = getArguments().getString( KEY );
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate( R.layout.fragment_registro_productos, container, false );
+
         chkHabilitar = view.findViewById( R.id.chkHabilitar );
         txtTitulo = view.findViewById( R.id.txtTitulo );
         spCategoria = view.findViewById( R.id.spCategoria );
@@ -139,8 +132,7 @@ public class RegistroProductosFragment extends Fragment {
         unidadmedidaSeleccionada = unidadMedida[0];
         categoriaSeleccionada = categorias[0];
 
-
-        if (mProductKey != 0) {
+        if (!mProductKey.equals( "" )) {
             btnGuardar.setText( "Actualizar" );
             btnEliminar.setText( "Eliminar" );
 
@@ -154,7 +146,7 @@ public class RegistroProductosFragment extends Fragment {
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         Productos producto = userSnapshot.getValue( Productos.class );
                         txtTitulo.getEditText().setText( producto.Titulo );
-                        txtTitulo.setTag(String.valueOf( producto.Id  ) );
+                        txtTitulo.setTag( producto.Id );
                         chkHabilitar.setChecked( producto.Estado );
                         int iCategorias = 0;
                         for (String Categoria :
@@ -192,7 +184,6 @@ public class RegistroProductosFragment extends Fragment {
                 }
             } );
         }
-
 
         ArrayAdapter adapterCategoria = new ArrayAdapter( getContext(), android.R.layout.simple_list_item_1, categorias );
         ArrayAdapter adapterUnidadMedida = new ArrayAdapter( getContext(), android.R.layout.simple_list_item_1, unidadMedida );
@@ -246,12 +237,28 @@ public class RegistroProductosFragment extends Fragment {
         btnEliminar.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mProductKey != 0) {
-                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS );
-                    DatabaseReference currentUserBD = mDatabase.child( FireBase.TABLAPRODUCTO + "/" + Key );
-                    currentUserBD.removeValue();
-                    Limpiar();
-                    Toasty.error( getContext(), "El producto ha sido eliminado", Toasty.LENGTH_LONG ).show();
+                if (mProductKey.equals( "" )) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
+                    builder.setMessage("¿Estás seguro de eliminar este producto?")
+                            .setTitle("Eliminación de productos");
+                    builder.setPositiveButton( "SI", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS );
+                            DatabaseReference currentUserBD = mDatabase.child( FireBase.TABLAPRODUCTO + "/" + Key );
+                            currentUserBD.removeValue();
+                            Limpiar();
+                            Toasty.error( getContext(), "El producto ha sido eliminado", Toasty.LENGTH_LONG ).show();
+                        }
+                    } );
+                    builder.setNegativeButton( "NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    } );
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+
                 } else {
                     Limpiar();
                 }
@@ -283,8 +290,8 @@ public class RegistroProductosFragment extends Fragment {
 
                 final Productos productos = new Productos();
 
-                if (mProductKey != 0) {
-                    productos.Id = Long.parseLong(txtTitulo.getTag().toString());
+                if (!mProductKey.equals( "" )) {
+                    productos.Id = txtTitulo.getTag().toString();
                 }
                 productos.Estado = chkHabilitar.isChecked();
                 productos.Titulo = txtTitulo.getEditText().getText().toString();
@@ -297,9 +304,24 @@ public class RegistroProductosFragment extends Fragment {
                 productos.Descuento = Double.parseDouble( txtDescuento.getEditText().getText().toString() );
 
 
-                if (mProductKey != 0) {
-                    updateProudcto( FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS ), productos );
-                    Limpiar();
+                if (!mProductKey.equals( "" )) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
+                    builder.setMessage("¿Estás seguro de actualizar este producto?")
+                            .setTitle("Actualización de productos");
+                    builder.setPositiveButton( "SI", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            updateProudcto( FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS ), productos );
+                            Limpiar();
+                        }
+                    } );
+                    builder.setNegativeButton( "NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    } );
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
                     btnGuardar.setEnabled( true );
                 } else {
                     Query query = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS )
@@ -317,7 +339,7 @@ public class RegistroProductosFragment extends Fragment {
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS );
 
                             final DatabaseReference newRef = ref.child( FireBase.TABLAPRODUCTO ).push();
-                            productos.Id = arrayList.size() + 1;
+                            productos.Id = newRef.getKey();
                             newRef.setValue( productos );
 
                             btnGuardar.setEnabled( true );
@@ -333,8 +355,6 @@ public class RegistroProductosFragment extends Fragment {
                 }
             }
         } );
-
-
     }
 
     private void Limpiar() {
@@ -346,16 +366,9 @@ public class RegistroProductosFragment extends Fragment {
         txtVenta.getEditText().setText( "0" );
         imgImagen.setImageDrawable( null );
         imgImagen.setVisibility( View.GONE );
-        mProductKey = 0;
+        mProductKey = "";
         btnEliminar.setText( "Limpiar" );
         btnGuardar.setText( "Guardar" );
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction( uri );
-        }
     }
 
     @Override
@@ -375,18 +388,7 @@ public class RegistroProductosFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 

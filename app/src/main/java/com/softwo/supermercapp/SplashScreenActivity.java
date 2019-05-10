@@ -33,7 +33,9 @@ import com.softwo.supermercapp.Globales.Variables;
 import com.softwo.supermercapp.Sqlite.Helper.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SplashScreenActivity extends AppCompatActivity {
     TextView txtEtiqueta;
@@ -53,6 +55,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper( this );
 
+
         getConfiguracion();
         getProductos();
         getCategorias();
@@ -65,9 +68,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     }
 
-    private void getUnidadMedida(){
+    private void getUnidadMedida() {
         Query query = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS )
-                .child( FireBase.TABLAUNIDADMEDIDA);
+                .child( FireBase.TABLAUNIDADMEDIDA );
 
         query.addListenerForSingleValueEvent( new ValueEventListener() {
             @Override
@@ -111,7 +114,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         } );
     }
 
-    private void getCiudades(){
+    private void getCiudades() {
         Query query = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS )
                 .child( FireBase.TABLACIUDAD );
 
@@ -134,7 +137,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         } );
     }
 
-    private void getConfiguracion(){
+    private void getConfiguracion() {
         Query query = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS )
                 .child( FireBase.TABLACONFIGURACION );
 
@@ -161,20 +164,27 @@ public class SplashScreenActivity extends AppCompatActivity {
         query.addListenerForSingleValueEvent( new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Variables.LISTAPRODUCTOS = new ArrayList<>();
+                /*Variables.LISTAPRODUCTOS = new ArrayList<>();
                 Variables.LISTAPRODUCTOSPROMOCIONES = new ArrayList<>();
-                Variables.LISTAPRODUCTOSFAVORITOS = new ArrayList<>();
+                Variables.LISTAPRODUCTOSFAVORITOS = new ArrayList<>();*/
 
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    Productos producto = userSnapshot.getValue( Productos.class );
-                    if (producto.Estado){
+//                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+//                    Productos producto = userSnapshot.getValue( Productos.class );
+//                    producto.setId( userSnapshot.getKey() );
+//
+//                    Map<String, Object> postValues = producto.toMap();
+//                    Map<String, Object> childUpdates = new HashMap<>();
+//                    childUpdates.put( "/" + FireBase.TABLAPRODUCTO + "/" + userSnapshot.getKey(), postValues );
+//                    FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS ).updateChildren( childUpdates );
+
+                    /*if (producto.Estado){
                         Variables.LISTAPRODUCTOS.add( producto );
                         if (producto.Descuento > 0)
                             Variables.LISTAPRODUCTOSPROMOCIONES.add( producto );
                         if (databaseHelper.ExisteFavoritos( databaseHelper.getWritableDatabase(), producto.getId() ))
                             Variables.LISTAPRODUCTOSFAVORITOS.add( producto );
-                    }
-                }
+                    }*/
+               // }
                 mProgreso += 20;
                 txtEtiqueta.setText( "Cargando listado de productos" );
                 Iniciar( mProgreso );

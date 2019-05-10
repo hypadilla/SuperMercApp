@@ -92,7 +92,7 @@ public class FavoritosFragment extends Fragment {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Productos producto = userSnapshot.getValue( Productos.class );
                     if (producto.isEstado()) {
-                        if (databaseHelper.ExisteFavoritos( databaseHelper.getWritableDatabase(), producto.getId() )){
+                        if (databaseHelper.ExisteFavoritos( databaseHelper.getWritableDatabase(),producto.getId()   )){
                             if (!TextQuery.equals( "" )) {
                                 if (producto.Titulo.toLowerCase().contains( TextQuery.toLowerCase() )) {
                                     arrayList.add( producto );

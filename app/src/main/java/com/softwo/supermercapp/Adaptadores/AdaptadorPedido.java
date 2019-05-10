@@ -82,8 +82,7 @@ public class AdaptadorPedido extends RecyclerView.Adapter<AdaptadorPedido.Pedido
         holder.btnAgregar.setVisibility( View.GONE );
 
         holder.txtCantidad.setText( String.valueOf( mDataset.get( position ).getCantidad() ) );
-
-        if (databaseHelper.ExisteFavoritos( databaseHelper.getWritableDatabase(), mDataset.get( position ).getProducto().getId() )) {
+        if (databaseHelper.ExisteFavoritos( databaseHelper.getWritableDatabase(),mDataset.get( position ).getProducto().getId() )  ) {
             holder.imgFavorito.setTag( R.drawable.ic_favorite_black_24dp );
             holder.imgFavorito.setImageResource( R.drawable.ic_favorite_black_24dp );
         } else {

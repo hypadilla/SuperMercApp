@@ -18,7 +18,7 @@ import com.softwo.supermercapp.Sqlite.Contract.ProductoContract;
 import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 12;
+    public static final int DATABASE_VERSION = 13;
     public static final String DATABASE_NAME = "supermercapp.db";
     Context context;
 
@@ -56,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL( "CREATE TABLE " + ProductoContract.ProductoEntry.TABLE_NAME + " ("
                 + ProductoContract.ProductoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + ProductoContract.ProductoEntry.ID + " INTEGER,"
+                + ProductoContract.ProductoEntry.ID + " TEXT,"
                 + ProductoContract.ProductoEntry.REFERENCIA + " TEXT,"
                 + ProductoContract.ProductoEntry.CODIGO + " TEXT,"
                 + ProductoContract.ProductoEntry.TITULO + " TEXT,"
@@ -83,6 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL( "drop table if exists " + FavoritoContract.FavoritoEntry.TABLE_NAME );
         sqLiteDatabase.execSQL( "drop table if exists " + PedidosContract.PedidoEntry.TABLE_NAME );
         sqLiteDatabase.execSQL( "drop table if exists " + DetallePedidoContract.DetallePedidoEntry.TABLE_NAME );
+        sqLiteDatabase.execSQL( "drop table if exists " + ProductoContract.ProductoEntry.TABLE_NAME );
 
         sqLiteDatabase.execSQL( "CREATE TABLE " + FavoritoContract.FavoritoEntry.TABLE_NAME + " ("
                 + FavoritoContract.FavoritoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -110,7 +111,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + DetallePedidoContract.DetallePedidoEntry.VENTA + " REAL)" );
         sqLiteDatabase.execSQL( "CREATE TABLE " + ProductoContract.ProductoEntry.TABLE_NAME + " ("
                 + ProductoContract.ProductoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + ProductoContract.ProductoEntry.ID + " INTEGER,"
+                + ProductoContract.ProductoEntry.ID + " TEXT,"
                 + ProductoContract.ProductoEntry.REFERENCIA + " TEXT,"
                 + ProductoContract.ProductoEntry.CODIGO + " TEXT,"
                 + ProductoContract.ProductoEntry.TITULO + " TEXT,"
@@ -135,7 +136,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void InsertarFavoritos(SQLiteDatabase sqLiteDatabase, Favoritos favorito) {
         if (ExisteFavoritos( sqLiteDatabase, favorito.getIdProducto() )) {
             sqLiteDatabase.update( FavoritoContract.FavoritoEntry.TABLE_NAME, favorito.toContentValues(),
-                    FavoritoContract.FavoritoEntry.IDPRODUCTO + "=" + favorito.getIdProducto(), null );
+                    FavoritoContract.FavoritoEntry.IDPRODUCTO + " = ?", new String[]{favorito.getIdProducto()} );
         } else {
             sqLiteDatabase.insert(
                     FavoritoContract.FavoritoEntry.TABLE_NAME,
@@ -145,22 +146,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //sqLiteDatabase.close();
     }
 
-    public void EliminarFavoritos(SQLiteDatabase sqLiteDatabase, long idProducto) {
-        sqLiteDatabase.delete( FavoritoContract.FavoritoEntry.TABLE_NAME, FavoritoContract.FavoritoEntry.IDPRODUCTO + "=" + idProducto, null );
+    public void EliminarFavoritos(SQLiteDatabase sqLiteDatabase, String idProducto) {
+        sqLiteDatabase.delete( FavoritoContract.FavoritoEntry.TABLE_NAME, FavoritoContract.FavoritoEntry.IDPRODUCTO + "= ?", new String[]{idProducto} );
         //sqLiteDatabase.close();
     }
 
     public Cursor ConsultarFavoritos(SQLiteDatabase sqLiteDatabase, String idProducto) {
         Cursor fila = sqLiteDatabase.rawQuery(
-                "SELECT * FROM " + FavoritoContract.FavoritoEntry.TABLE_NAME + " WHERE " + FavoritoContract.FavoritoEntry.IDPRODUCTO + " = " + idProducto, null );
+                "SELECT * FROM " + FavoritoContract.FavoritoEntry.TABLE_NAME + " WHERE " + FavoritoContract.FavoritoEntry.IDPRODUCTO + " = ?", new String[]{idProducto} );
         //sqLiteDatabase.close();
         return fila;
     }
 
 
-    public boolean ExisteFavoritos(SQLiteDatabase sqLiteDatabase, long idProducto) {
+    public boolean ExisteFavoritos(SQLiteDatabase sqLiteDatabase, String idProducto) {
         Cursor fila = sqLiteDatabase.rawQuery(
-                "SELECT * FROM " + FavoritoContract.FavoritoEntry.TABLE_NAME + " WHERE " + FavoritoContract.FavoritoEntry.IDPRODUCTO + " = " + idProducto, null );
+                "SELECT * FROM " + FavoritoContract.FavoritoEntry.TABLE_NAME + " WHERE " + FavoritoContract.FavoritoEntry.IDPRODUCTO + " = ?", new String[]{idProducto} );
 
         //sqLiteDatabase.close();
         if (fila.moveToFirst())
@@ -264,8 +265,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean ExisteDetallePedido(SQLiteDatabase sqLiteDatabase, long idProducto, long idPedido) {
         Cursor fila = sqLiteDatabase.rawQuery(
                 "SELECT * FROM " + DetallePedidoContract.DetallePedidoEntry.TABLE_NAME
-                        + " WHERE " + DetallePedidoContract.DetallePedidoEntry.IDPRODUCTO + " = " + idProducto
-                        + " AND " + DetallePedidoContract.DetallePedidoEntry.IDPEDIDO + " = " + idPedido, null );
+                        + " WHERE " + DetallePedidoContract.DetallePedidoEntry.IDPRODUCTO + " = ? "
+                        + " AND " + DetallePedidoContract.DetallePedidoEntry.IDPEDIDO + " = " + idPedido, new String[]{String.valueOf( idProducto )} );
         if (fila.moveToFirst())
             return true;
         else

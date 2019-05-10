@@ -6,22 +6,22 @@ import com.google.firebase.database.Exclude;
 import com.softwo.supermercapp.Sqlite.Contract.FavoritoContract;
 
 public class Favoritos {
-    public long idProducto;
+    public String idProducto;
     public boolean estado;
 
     public Favoritos() {
     }
 
-    public Favoritos( long idProducto, boolean estado) {
+    public Favoritos( String idProducto, boolean estado) {
         this.idProducto = idProducto;
         this.estado = estado;
     }
 
-    public long getIdProducto() {
+    public String getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(long idProducto) {
+    public void setIdProducto(String idProducto) {
         this.idProducto = idProducto;
     }
 

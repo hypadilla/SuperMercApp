@@ -98,7 +98,7 @@ public class ProveedoresFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction;
-                RegistroProductosFragment registroProductosFragment = RegistroProductosFragment.newInstance(0);
+                RegistroProductosFragment registroProductosFragment = RegistroProductosFragment.newInstance("");
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace( R.id.fragment, registroProductosFragment ).addToBackStack( "RegistroProductosFragment" );
                 fragmentTransaction.commit();

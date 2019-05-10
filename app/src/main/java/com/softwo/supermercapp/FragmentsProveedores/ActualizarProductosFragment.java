@@ -3,6 +3,7 @@ package com.softwo.supermercapp.FragmentsProveedores;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,88 +15,53 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.softwo.supermercapp.Adaptadores.AdaptadorActualizarProductos;
 import com.softwo.supermercapp.Adaptadores.AdaptadorProductos;
+import com.softwo.supermercapp.Constantes.FireBase;
 import com.softwo.supermercapp.Entidades.Productos;
 import com.softwo.supermercapp.Globales.Variables;
 import com.softwo.supermercapp.R;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ActualizarProductosFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ActualizarProductosFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ActualizarProductosFragment extends Fragment {
-    private ArrayList<Productos> mFiltro;
-
     private RecyclerView mRecyclerViewProducto;
-    private RecyclerView.Adapter mAdapterProducto;
     private RecyclerView.LayoutManager mLayoutManagerProducto;
-    private int mPostsPerPageProducto = 50;
-
+    private RecyclerView.Adapter mAdapterProducto;
     private TextView txtCategoria;
     private SearchView searchView;
-
+    ValueEventListener valueEventListenerProductos;
+    Query queryProductos;
     private LinearLayout lnCargando;
     private ConstraintLayout ctDatos;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    String TextQuery = "";
 
     private OnFragmentInteractionListener mListener;
 
     public ActualizarProductosFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ActualizarProductosFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ActualizarProductosFragment newInstance(String param1, String param2) {
-        ActualizarProductosFragment fragment = new ActualizarProductosFragment();
-        Bundle args = new Bundle();
-        args.putString( ARG_PARAM1, param1 );
-        args.putString( ARG_PARAM2, param2 );
-        fragment.setArguments( args );
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString( ARG_PARAM1 );
-            mParam2 = getArguments().getString( ARG_PARAM2 );
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate( R.layout.fragment_productos, container, false );
+
         txtCategoria = view.findViewById( R.id.txtCategoria );
         mRecyclerViewProducto = view.findViewById( R.id.rvProductos );
         searchView = view.findViewById( R.id.searchView );
         lnCargando = view.findViewById( R.id.lnCargando );
         ctDatos = view.findViewById( R.id.ctDatos );
+
         return view;
     }
 
@@ -106,64 +72,71 @@ public class ActualizarProductosFragment extends Fragment {
         txtCategoria.setText( "Actualización de productos" );
 
         mLayoutManagerProducto = new LinearLayoutManager( getContext() );
-
         mRecyclerViewProducto.setHasFixedSize( true );
-        mRecyclerViewProducto.setItemViewCacheSize( mPostsPerPageProducto );
-        mRecyclerViewProducto.setDrawingCacheEnabled( true );
-        mRecyclerViewProducto.setDrawingCacheQuality( View.DRAWING_CACHE_QUALITY_HIGH );
         mRecyclerViewProducto.setLayoutManager( mLayoutManagerProducto );
 
-        mAdapterProducto = new AdaptadorActualizarProductos( Variables.LISTAPRODUCTOS, getContext(), lnCargando, ctDatos );
+        queryProductos = FirebaseDatabase.getInstance().getReference()
+                .child( FireBase.BASEDATOS + "/" + FireBase.TABLAPRODUCTO );
 
-        mRecyclerViewProducto.setAdapter( mAdapterProducto );
+        valueEventListenerProductos = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Productos> arrayList = new ArrayList<>();
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Productos producto = userSnapshot.getValue( Productos.class );
+                        if (!TextQuery.equals( "" )) {
+                            if (producto.Titulo.toLowerCase().contains( TextQuery.toLowerCase() )) {
+                                arrayList.add( producto );
+                            }
+                        } else {
+                            arrayList.add( producto );
+                        }
+                }
+                mAdapterProducto = new AdaptadorActualizarProductos(arrayList,  getContext(), lnCargando, ctDatos );
+                mRecyclerViewProducto.setAdapter( mAdapterProducto );
+
+                ctDatos.setVisibility( View.VISIBLE );
+                lnCargando.setVisibility( View.GONE );
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        queryProductos.addValueEventListener( valueEventListenerProductos );
 
         searchView.setOnQueryTextListener( new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                mFiltro = new ArrayList<>();
-                for (Productos producto :
-                        Variables.LISTAPRODUCTOS) {
-                    if (producto.getTitulo().toUpperCase().contains( query.toUpperCase() ))
-                        if (producto.Estado)
-                            mFiltro.add( producto );
-                }
-
-                mAdapterProducto = new AdaptadorActualizarProductos( mFiltro, getContext(), lnCargando, ctDatos );
-                mRecyclerViewProducto.setAdapter( mAdapterProducto );
-
+            public boolean onQueryTextSubmit(String q) {
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.equals( "" )) {
-                    mAdapterProducto = new AdaptadorActualizarProductos( Variables.LISTAPRODUCTOS, getContext(), lnCargando, ctDatos );
-                    mRecyclerViewProducto.setAdapter( mAdapterProducto );
-                } else {
-                    mFiltro = new ArrayList<>();
-                    for (Productos producto :
-                            Variables.LISTAPRODUCTOS) {
-                        if (producto.getTitulo().toUpperCase().contains( newText.toUpperCase() ))
-                            if (producto.Estado)
-                                mFiltro.add( producto );
-                    }
-
-                    mAdapterProducto = new AdaptadorActualizarProductos( mFiltro, getContext(), lnCargando, ctDatos );
-                    mRecyclerViewProducto.setAdapter( mAdapterProducto );
+                TextQuery = newText;
+                if (TextQuery.equals( "" )) {
+                    ctDatos.setVisibility( View.VISIBLE );
+                    lnCargando.setVisibility( View.GONE );
                 }
+                queryProductos.removeEventListener( valueEventListenerProductos );
+                queryProductos.addValueEventListener( valueEventListenerProductos );
                 return false;
             }
         } );
-
-        lnCargando.setVisibility( View.GONE );
-        ctDatos.setVisibility( View.VISIBLE );
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction( uri );
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
+        queryProductos.addValueEventListener(valueEventListenerProductos);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        queryProductos.removeEventListener( valueEventListenerProductos );
     }
 
     @Override

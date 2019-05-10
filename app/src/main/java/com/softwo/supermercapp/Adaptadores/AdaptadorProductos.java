@@ -72,7 +72,7 @@ public class AdaptadorProductos extends RecyclerView.Adapter<ViewHolderProducto>
         holder.btnAgregar.setVisibility( View.VISIBLE );
         holder.txtCantidad.setText( "0" );
 
-        if (databaseHelper.ExisteFavoritos( databaseHelper.getWritableDatabase(), productos.get( position ).getId() )) {
+        if (databaseHelper.ExisteFavoritos( databaseHelper.getWritableDatabase(), productos.get( position ).getId() ) ) {
             holder.imgFavorito.setTag( R.drawable.ic_favorite_black_24dp );
             holder.imgFavorito.setImageResource( R.drawable.ic_favorite_black_24dp );
         } else {
@@ -187,14 +187,15 @@ public class AdaptadorProductos extends RecyclerView.Adapter<ViewHolderProducto>
                 if (holder.imgFavorito.getTag().equals( R.drawable.ic_favorite_border_black_24dp )) {
                     holder.imgFavorito.setImageResource( R.drawable.ic_favorite_black_24dp );
                     holder.imgFavorito.setTag( R.drawable.ic_favorite_black_24dp );
-                    databaseHelper.InsertarFavoritos( databaseHelper.getWritableDatabase(), new Favoritos( productos.get( position ).getId(), true ) );
+                    databaseHelper.InsertarFavoritos( databaseHelper.getWritableDatabase(), new Favoritos(productos.get( position ).getId(), true ) );
                     Toasty.success( holder.imgFavorito.getContext(), "Añadido a mis favoritos!", Toast.LENGTH_SHORT, true ).show();
                 } else {
                     databaseHelper.EliminarFavoritos( databaseHelper.getWritableDatabase(), productos.get( position ).getId() );
                     holder.imgFavorito.setImageResource( R.drawable.ic_favorite_border_black_24dp );
                     holder.imgFavorito.setTag( R.drawable.ic_favorite_border_black_24dp );
+                    productos.remove( position );
                     Toasty.error( holder.imgFavorito.getContext(), "Eliminado de mis favoritos.", Toast.LENGTH_SHORT, true ).show();
-                    if (isFavorite){
+                    if (isFavorite) {
                         notifyDataSetChanged();
                     }
                 }

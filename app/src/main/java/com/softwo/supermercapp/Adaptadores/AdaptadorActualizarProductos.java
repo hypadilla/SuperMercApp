@@ -121,14 +121,12 @@ public class AdaptadorActualizarProductos extends RecyclerView.Adapter<ViewHolde
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             Productos producto = userSnapshot.getValue(Productos.class);
-                            //if (producto.Id == productos.get( position ).Id){
                                 FragmentManager fragmentManager = ((FragmentActivity)contexto).getSupportFragmentManager();
                                 FragmentTransaction fragmentTransaction;
-                                RegistroProductosFragment registroProductosFragment = RegistroProductosFragment.newInstance((int)(producto.Id));
+                                RegistroProductosFragment registroProductosFragment = RegistroProductosFragment.newInstance(producto.Id);
                                 fragmentTransaction = fragmentManager.beginTransaction();
                                 fragmentTransaction.replace( R.id.fragment, registroProductosFragment ).addToBackStack( "RegistroProductosFragment" );
                                 fragmentTransaction.commit();
-                            //}
                         }
                     }
 

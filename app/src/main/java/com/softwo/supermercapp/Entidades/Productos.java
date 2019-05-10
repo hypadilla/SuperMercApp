@@ -13,7 +13,7 @@ import java.util.Map;
 
 @IgnoreExtraProperties
 public class Productos {
-    public long Id;
+    public String Id;
     public String Referencia;
     public String Codigo;
     public String Titulo;
@@ -37,7 +37,7 @@ public class Productos {
     public Productos() {
     }
 
-    public Productos(long Id, String referencia, String codigo, String titulo, String descripcion, String categoria, String linea, String ubicacion, String puesto, double costo, boolean manejaIVA, double venta, double stock, double cantidadMininaCompra, double stockMinimo, String imagen, double descuento, String unidadMedida, String presentacion, boolean estado) {
+    public Productos(String Id, String referencia, String codigo, String titulo, String descripcion, String categoria, String linea, String ubicacion, String puesto, double costo, boolean manejaIVA, double venta, double stock, double cantidadMininaCompra, double stockMinimo, String imagen, double descuento, String unidadMedida, String presentacion, boolean estado) {
         this.Id = Id;
         Referencia = referencia;
         Codigo = codigo;
@@ -61,12 +61,12 @@ public class Productos {
     }
 
     @Exclude
-    public long getId() {
+    public String getId() {
         return Id;
     }
 
     @Exclude
-    public void setId(long Id) {
+    public void setId(String Id) {
         this.Id = Id;
     }
 

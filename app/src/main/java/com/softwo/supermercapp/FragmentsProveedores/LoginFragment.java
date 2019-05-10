@@ -3,11 +3,23 @@ package com.softwo.supermercapp.FragmentsProveedores;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.softwo.supermercapp.Constantes.FireBase;
+import com.softwo.supermercapp.Entidades.Usuarios;
 import com.softwo.supermercapp.R;
 
 /**
@@ -19,6 +31,10 @@ import com.softwo.supermercapp.R;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
+    Button btnIngresar;
+    TextInputLayout txtUsername;
+    TextInputLayout txtPassword;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -65,7 +81,67 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate( R.layout.fragment_login, container, false );
+        View view = inflater.inflate( R.layout.fragment_login, container, false );
+
+        btnIngresar = view.findViewById( R.id.btnIngresar );
+        txtUsername = (TextInputLayout) view.findViewById( R.id.txtUsername );
+        txtPassword = (TextInputLayout) view.findViewById( R.id.txtPassword );
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        super.onViewCreated( view, savedInstanceState );
+
+        btnIngresar.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (txtUsername.getEditText().getText().toString().equals( "" )) {
+                    txtUsername.setError( "Este campo es requerido" );
+                }
+
+                if (txtPassword.getEditText().getText().toString().equals( "" )) {
+                    txtPassword.setError( "Este campo es requerido" );
+                }
+
+                if (txtUsername.isErrorEnabled() || txtPassword.isErrorEnabled())
+                    return;
+
+                Query query = FirebaseDatabase.getInstance().getReference()
+                        .child( FireBase.BASEDATOS + "/" + FireBase.TABLAUSUARIO );
+
+                query.addListenerForSingleValueEvent( new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        boolean res = false;
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            Usuarios usuarios = userSnapshot.getValue( Usuarios.class );
+                            if (txtUsername.getEditText().getText().toString().toUpperCase().equals( usuarios.Usuario.toUpperCase() )
+                                    && txtPassword.getEditText().getText().toString().equals( usuarios.Password )) {
+                                res = true;
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction;
+                                ProveedoresFragment proveedoresFragment = new ProveedoresFragment();
+                                fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace( R.id.fragment, proveedoresFragment ).addToBackStack( "ProveedoresFragment" );
+                                fragmentTransaction.commit();
+                            }
+                        }
+
+                        if (!res)
+                            Snackbar.make( view, "Usuario y/o contraseña incorrecto/s", Snackbar.LENGTH_LONG ).show();
+                    }
+
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                } );
+            }
+        } );
     }
 
     // TODO: Rename method, update argument and hook method into UI event

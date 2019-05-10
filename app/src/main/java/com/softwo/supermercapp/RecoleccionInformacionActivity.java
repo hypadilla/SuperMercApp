@@ -12,8 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.softwo.supermercapp.Async.AlmacenarPreferences;
 import com.softwo.supermercapp.Constantes.FireBase;
+import com.softwo.supermercapp.Entidades.Ciudades;
 import com.softwo.supermercapp.Entidades.DetallePedido;
 import com.softwo.supermercapp.Entidades.Pedidos;
 import com.softwo.supermercapp.Entidades.Persona;
@@ -42,9 +46,9 @@ import es.dmoral.toasty.Toasty;
 public class RecoleccionInformacionActivity extends AppCompatActivity {
     private FirebaseAnalytics mFirebaseAnalytics;
 
-
+    String ciudadSeleccionada;
     String pattern = " dd/MM/yyyy hh:mm:ss aa";
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat( pattern );
     /***
      * Constantes
      */
@@ -63,12 +67,13 @@ public class RecoleccionInformacionActivity extends AppCompatActivity {
     TextInputLayout txtReferencia;
     TextView lblMaps;
     CheckBox chkRecordar;
+    Spinner spinner;
 
     SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance( this );
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_recoleccion_informacion );
 
@@ -82,6 +87,7 @@ public class RecoleccionInformacionActivity extends AppCompatActivity {
         txtReferencia = findViewById( R.id.txtReferencia );
         lblMaps = findViewById( R.id.lblMaps );
         chkRecordar = findViewById( R.id.chkRecordar );
+        spinner = findViewById( R.id.spinner );
 
         getPreferences();
 
@@ -91,6 +97,29 @@ public class RecoleccionInformacionActivity extends AppCompatActivity {
 
             }
         } );
+
+        String[] ciudades = new String[Variables.LISTACIUDADES.size()];
+
+        for (int i = 0; i < Variables.LISTACIUDADES.size(); i++) {
+            ciudades[i] = Variables.LISTACIUDADES.get( i ).Nombre;
+        }
+        ciudadSeleccionada = ciudades[0];
+
+        ArrayAdapter adapter = new ArrayAdapter( this, android.R.layout.simple_list_item_1, ciudades );
+        spinner.setAdapter( adapter );
+
+        spinner.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ciudadSeleccionada= spinner.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        } );
+
 
         btnContinuar.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -113,12 +142,12 @@ public class RecoleccionInformacionActivity extends AppCompatActivity {
                         txtNombre.getEditText().getText().toString()
                         , txtDireccion.getEditText().getText().toString()
                         , txtReferencia.getEditText().getText().toString()
-                        , txtTelefono.getEditText().getText().toString(), null, "" );
+                        , txtTelefono.getEditText().getText().toString(), null, "", ciudadSeleccionada);
 
                 AlmacenarPreferences almacenarPreferences = new AlmacenarPreferences( getApplicationContext(), Variables.persona, chkRecordar.isChecked() );
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                    almacenarPreferences.executeOnExecutor( AsyncTask.THREAD_POOL_EXECUTOR);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                    almacenarPreferences.executeOnExecutor( AsyncTask.THREAD_POOL_EXECUTOR );
                 else
                     almacenarPreferences.execute();
 
@@ -129,13 +158,13 @@ public class RecoleccionInformacionActivity extends AppCompatActivity {
 
                     Variables.pedido.set_Id( 0 );
                     Variables.pedido.setId( "" );
-                    Variables.pedido.setFecha( simpleDateFormat.format(  new Date() ));
+                    Variables.pedido.setFecha( simpleDateFormat.format( new Date() ) );
                     Variables.pedido.setPersona( Variables.persona );
                     Variables.pedido.setObservacion( "" );
                     Variables.pedido.setTotal( 0 );
                     Variables.pedido.setRecibido( 0 );
                     Variables.pedido.setDevuelto( 0 );
-                    Variables.pedido.setEstado( false );
+                    Variables.pedido.setEstado( 0 );
                     Variables.pedido.setDetallePedido( Variables.detallePedido );
                 }
 

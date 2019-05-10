@@ -35,4 +35,23 @@
     <string name="descuento">Promociones</string>
     <string name="contacto">Contacto</string>
     <string name="todos_productos">Todos los productos</string>
+    <string name="buscar">Buscar...</string>
+    <string name="registro_productos">Registro de productos</string>
+    <string name="titulo">Título</string>
+    <string name="vrdescuento">Descuento</string>
+    <string name="vrventa">Venta</string>
+    <string name="habilitar">Habilitar</string>
+    <string name="presentacion">Presentación</string>
+    <string name="cantidad">Cantidad</string>
+    <string name="direccion_imagen">Ruta de la imagen</string>
+    <string name="limpiar">Limpiar</string>
+    <string name="guardar">Guardar</string>
+    <string name="comprobar_imagen">Verificar imagen</string>
+    <string name="zona_proveedores">Zona de proveedores</string>
+    <string name="proveedor">Proveedor</string>
+    <string name="inicio_sesion_proveedores">Inicio de sesión de proveedores</string>
+    <string name="nombre_usuario">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="mostrar_password">Mostrar contraseña</string>
+    <string name="ingresar">Ingresar</string>
 </resources>

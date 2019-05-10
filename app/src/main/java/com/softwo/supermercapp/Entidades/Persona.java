@@ -13,17 +13,19 @@ public class Persona {
     public String Telefono;
     public Location Localizacion;
     public String Token;
+    public String Ciudad;
 
     public Persona() {
     }
 
-    public Persona(String nombre, String direccion, String referencia, String telefono, Location localizacion, String Token) {
+    public Persona(String nombre, String direccion, String referencia, String telefono, Location localizacion, String token, String ciudad) {
         Nombre = nombre;
         Direccion = direccion;
         Referencia = referencia;
         Telefono = telefono;
         Localizacion = localizacion;
-        this.Token = Token;
+        Token = token;
+        Ciudad = ciudad;
     }
 
     @Exclude

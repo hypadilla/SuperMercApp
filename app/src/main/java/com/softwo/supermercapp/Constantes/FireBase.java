@@ -10,6 +10,9 @@ public class FireBase {
     public static String TABLAPRODUCTO = "producto";
     public static String TABLAPEDIDO = "pedido";
     public static String TABLACONFIGURACION = "configuracion";
+    public static String TABLACIUDAD = "ciudad";
+    public static String TABLAUNIDADMEDIDA = "unidadmedida";
+    public static String TABLAUSUARIO = "usuario";
 
     public static FirebaseDatabase DATABASE = FirebaseDatabase.getInstance();
     public static DatabaseReference REFERENCIA = DATABASE.getReference( BASEDATOS );

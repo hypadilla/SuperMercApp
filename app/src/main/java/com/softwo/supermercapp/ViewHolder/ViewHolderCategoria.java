@@ -17,9 +17,9 @@ import com.softwo.supermercapp.R;
 
 public class ViewHolderCategoria extends RecyclerView.ViewHolder {
 
-    private CardView cvTarjeta;
-    private TextView txtTitulo;
-    private ImageView imgImagen;
+    public CardView cvTarjeta;
+    public TextView txtTitulo;
+    public ImageView imgImagen;
 
     public ViewHolderCategoria(@NonNull View itemView) {
         super( itemView );
@@ -49,11 +49,13 @@ public class ViewHolderCategoria extends RecyclerView.ViewHolder {
             }
         } );
 
-        Glide.with( imgImagen.getContext() )
-                .load( categoria.getImagen() )
-                .thumbnail( 0.1f )
-                .centerCrop()
-                .diskCacheStrategy( DiskCacheStrategy.ALL )
-                .into( imgImagen );
+        if (!categoria.getImagen().equals( null )){
+            Glide.with( imgImagen.getContext() )
+                    .load( categoria.getImagen() )
+                    .thumbnail( 0.1f )
+                    .centerCrop()
+                    .diskCacheStrategy( DiskCacheStrategy.ALL )
+                    .into( imgImagen );
+        }
     }
 }

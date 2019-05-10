@@ -49,9 +49,6 @@ public class PedidosFragment extends Fragment {
     private RecyclerView.Adapter mAdapterPedidos;
     private RecyclerView.LayoutManager mLayoutManagerPedidos;
 
-    private LinearLayout lnCargando;
-    private ConstraintLayout ctDatos;
-
     private DatabaseHelper databaseHelper;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -102,8 +99,6 @@ public class PedidosFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate( R.layout.fragment_pedidos, container, false );
         mRecyclerViewPedidos = view.findViewById( R.id.rvPedidos );
-        lnCargando = view.findViewById( R.id.lnCargando );
-        ctDatos = view.findViewById( R.id.ctDatos );
         return view;
     }
 
@@ -111,7 +106,8 @@ public class PedidosFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated( view, savedInstanceState );
 
-        mLayoutManagerPedidos = new LinearLayoutManager( getContext(), LinearLayoutManager.VERTICAL, false );
+        mLayoutManagerPedidos = new LinearLayoutManager( getContext(), LinearLayoutManager.VERTICAL, true );
+        ((LinearLayoutManager) mLayoutManagerPedidos).setStackFromEnd(true);
 
         mRecyclerViewPedidos.setHasFixedSize( true );
 

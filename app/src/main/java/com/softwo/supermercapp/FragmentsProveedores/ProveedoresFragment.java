@@ -1,12 +1,15 @@
-package com.softwo.supermercapp.Fragments;
+package com.softwo.supermercapp.FragmentsProveedores;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.softwo.supermercapp.R;
 
@@ -19,6 +22,9 @@ import com.softwo.supermercapp.R;
  * create an instance of this fragment.
  */
 public class ProveedoresFragment extends Fragment {
+    Button btnActualizarProductos;
+    Button btnRegistrarProductos;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -65,7 +71,39 @@ public class ProveedoresFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate( R.layout.fragment_proveedores, container, false );
+        View view = inflater.inflate( R.layout.fragment_proveedores, container, false );
+        btnRegistrarProductos = view.findViewById( R.id.btnRegistrarProductos );
+        btnActualizarProductos = view.findViewById( R.id.btnActualizarProductos );
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        super.onViewCreated( view, savedInstanceState );
+
+        btnActualizarProductos.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction;
+                ActualizarProductosFragment actualizarProductosFragment = new ActualizarProductosFragment();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace( R.id.fragment, actualizarProductosFragment ).addToBackStack( "ActualizarProductosFragment" );
+                fragmentTransaction.commit();
+            }
+        } );
+
+        btnRegistrarProductos.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction;
+                RegistroProductosFragment registroProductosFragment = RegistroProductosFragment.newInstance(0);
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace( R.id.fragment, registroProductosFragment ).addToBackStack( "RegistroProductosFragment" );
+                fragmentTransaction.commit();
+            }
+        } );
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -1,14 +1,26 @@
-package com.softwo.supermercapp.Fragments;
+package com.softwo.supermercapp.FragmentsProveedores;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.SearchView;
+import android.widget.TextView;
 
+import com.softwo.supermercapp.Adaptadores.AdaptadorActualizarProductos;
+import com.softwo.supermercapp.Adaptadores.AdaptadorProductos;
+import com.softwo.supermercapp.Entidades.Productos;
+import com.softwo.supermercapp.Globales.Variables;
 import com.softwo.supermercapp.R;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +31,19 @@ import com.softwo.supermercapp.R;
  * create an instance of this fragment.
  */
 public class ActualizarProductosFragment extends Fragment {
+    private ArrayList<Productos> mFiltro;
+
+    private RecyclerView mRecyclerViewProducto;
+    private RecyclerView.Adapter mAdapterProducto;
+    private RecyclerView.LayoutManager mLayoutManagerProducto;
+    private int mPostsPerPageProducto = 50;
+
+    private TextView txtCategoria;
+    private SearchView searchView;
+
+    private LinearLayout lnCargando;
+    private ConstraintLayout ctDatos;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -66,8 +91,72 @@ public class ActualizarProductosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate( R.layout.fragment_productos, container, false );
-        
+        txtCategoria = view.findViewById( R.id.txtCategoria );
+        mRecyclerViewProducto = view.findViewById( R.id.rvProductos );
+        searchView = view.findViewById( R.id.searchView );
+        lnCargando = view.findViewById( R.id.lnCargando );
+        ctDatos = view.findViewById( R.id.ctDatos );
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated( view, savedInstanceState );
+
+        txtCategoria.setText( "Actualización de productos" );
+
+        mLayoutManagerProducto = new LinearLayoutManager( getContext() );
+
+        mRecyclerViewProducto.setHasFixedSize( true );
+        mRecyclerViewProducto.setItemViewCacheSize( mPostsPerPageProducto );
+        mRecyclerViewProducto.setDrawingCacheEnabled( true );
+        mRecyclerViewProducto.setDrawingCacheQuality( View.DRAWING_CACHE_QUALITY_HIGH );
+        mRecyclerViewProducto.setLayoutManager( mLayoutManagerProducto );
+
+        mAdapterProducto = new AdaptadorActualizarProductos( Variables.LISTAPRODUCTOS, getContext(), lnCargando, ctDatos );
+
+        mRecyclerViewProducto.setAdapter( mAdapterProducto );
+
+        searchView.setOnQueryTextListener( new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mFiltro = new ArrayList<>();
+                for (Productos producto :
+                        Variables.LISTAPRODUCTOS) {
+                    if (producto.getTitulo().toUpperCase().contains( query.toUpperCase() ))
+                        if (producto.Estado)
+                            mFiltro.add( producto );
+                }
+
+                mAdapterProducto = new AdaptadorActualizarProductos( mFiltro, getContext(), lnCargando, ctDatos );
+                mRecyclerViewProducto.setAdapter( mAdapterProducto );
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.equals( "" )) {
+                    mAdapterProducto = new AdaptadorActualizarProductos( Variables.LISTAPRODUCTOS, getContext(), lnCargando, ctDatos );
+                    mRecyclerViewProducto.setAdapter( mAdapterProducto );
+                } else {
+                    mFiltro = new ArrayList<>();
+                    for (Productos producto :
+                            Variables.LISTAPRODUCTOS) {
+                        if (producto.getTitulo().toUpperCase().contains( newText.toUpperCase() ))
+                            if (producto.Estado)
+                                mFiltro.add( producto );
+                    }
+
+                    mAdapterProducto = new AdaptadorActualizarProductos( mFiltro, getContext(), lnCargando, ctDatos );
+                    mRecyclerViewProducto.setAdapter( mAdapterProducto );
+                }
+                return false;
+            }
+        } );
+
+        lnCargando.setVisibility( View.GONE );
+        ctDatos.setVisibility( View.VISIBLE );
     }
 
     // TODO: Rename method, update argument and hook method into UI event

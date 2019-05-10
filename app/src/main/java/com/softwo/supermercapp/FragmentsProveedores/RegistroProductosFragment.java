@@ -1,10 +1,13 @@
-package com.softwo.supermercapp.Fragments;
+package com.softwo.supermercapp.FragmentsProveedores;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,10 @@ import com.softwo.supermercapp.R;
 import com.softwo.supermercapp.Sqlite.Helper.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import es.dmoral.toasty.Toasty;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,8 +47,6 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class RegistroProductosFragment extends Fragment {
-    DatabaseHelper databaseHelper;
-
     private CheckBox chkHabilitar;
     private TextInputLayout txtTitulo;
     private Spinner spCategoria;
@@ -55,6 +60,7 @@ public class RegistroProductosFragment extends Fragment {
     private Button btnEliminar;
     private Button btnGuardar;
 
+    String Key;
     String categoriaSeleccionada;
     String unidadmedidaSeleccionada;
 
@@ -63,7 +69,7 @@ public class RegistroProductosFragment extends Fragment {
     private static final String KEY = "ProductKey";
 
     // TODO: Rename and change types of parameters
-    private String mProductKey;
+    private int mProductKey;
 
     private OnFragmentInteractionListener mListener;
 
@@ -79,10 +85,10 @@ public class RegistroProductosFragment extends Fragment {
      * @return A new instance of fragment RegistroProductosFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RegistroProductosFragment newInstance(String param1) {
+    public static RegistroProductosFragment newInstance(int param1) {
         RegistroProductosFragment fragment = new RegistroProductosFragment();
         Bundle args = new Bundle();
-        args.putString( KEY, param1 );
+        args.putInt( KEY, param1 );
         fragment.setArguments( args );
         return fragment;
     }
@@ -91,7 +97,7 @@ public class RegistroProductosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         if (getArguments() != null) {
-            mProductKey = getArguments().getString( KEY );
+            mProductKey = getArguments().getInt( KEY );
         }
     }
 
@@ -120,10 +126,8 @@ public class RegistroProductosFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated( view, savedInstanceState );
 
-        databaseHelper = new DatabaseHelper( getContext() );
-
-        String[] categorias = new String[Variables.LISTACATEGORIAS.size()];
-        String[] unidadMedida = new String[Variables.LISTAUNIDADMEDIDA.size()];
+        final String[] categorias = new String[Variables.LISTACATEGORIAS.size()];
+        final String[] unidadMedida = new String[Variables.LISTAUNIDADMEDIDA.size()];
 
         for (int i = 0; i < Variables.LISTACATEGORIAS.size(); i++) {
             categorias[i] = Variables.LISTACATEGORIAS.get( i ).Titulo;
@@ -134,6 +138,61 @@ public class RegistroProductosFragment extends Fragment {
         }
         unidadmedidaSeleccionada = unidadMedida[0];
         categoriaSeleccionada = categorias[0];
+
+
+        if (mProductKey != 0) {
+            btnGuardar.setText( "Actualizar" );
+            btnEliminar.setText( "Eliminar" );
+
+            Query query = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS )
+                    .child( FireBase.TABLAPRODUCTO )
+                    .orderByChild( "Id" ).equalTo( mProductKey );
+
+            query.addListenerForSingleValueEvent( new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        Productos producto = userSnapshot.getValue( Productos.class );
+                        txtTitulo.getEditText().setText( producto.Titulo );
+                        txtTitulo.setTag(String.valueOf( producto.Id  ) );
+                        chkHabilitar.setChecked( producto.Estado );
+                        int iCategorias = 0;
+                        for (String Categoria :
+                                categorias) {
+                            if (Categoria.equals( producto.Categoria )) {
+                                break;
+                            }
+                            iCategorias++;
+                        }
+                        spCategoria.setSelection( iCategorias );
+                        int iUnidadMedida = 0;
+                        for (String Unidad :
+                                unidadMedida) {
+                            if (Unidad.equals( producto.UnidadMedida )) {
+                                break;
+                            }
+                            iUnidadMedida++;
+                        }
+                        spUnidadMedida.setSelection( iUnidadMedida );
+                        txtDescuento.getEditText().setText( String.valueOf( producto.Descuento ) );
+                        txtVenta.getEditText().setText( String.valueOf( producto.Venta ) );
+
+                        String[] parts = producto.getPresentacion().split( " " );
+                        String part1 = parts[0];
+
+                        txtCantidad.getEditText().setText( part1 );
+
+                        txtRutaImagen.getEditText().setText( producto.Imagen );
+                        Key = userSnapshot.getKey();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            } );
+        }
+
 
         ArrayAdapter adapterCategoria = new ArrayAdapter( getContext(), android.R.layout.simple_list_item_1, categorias );
         ArrayAdapter adapterUnidadMedida = new ArrayAdapter( getContext(), android.R.layout.simple_list_item_1, unidadMedida );
@@ -187,7 +246,15 @@ public class RegistroProductosFragment extends Fragment {
         btnEliminar.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Limpiar();
+                if (mProductKey != 0) {
+                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS );
+                    DatabaseReference currentUserBD = mDatabase.child( FireBase.TABLAPRODUCTO + "/" + Key );
+                    currentUserBD.removeValue();
+                    Limpiar();
+                    Toasty.error( getContext(), "El producto ha sido eliminado", Toasty.LENGTH_LONG ).show();
+                } else {
+                    Limpiar();
+                }
             }
         } );
 
@@ -216,6 +283,9 @@ public class RegistroProductosFragment extends Fragment {
 
                 final Productos productos = new Productos();
 
+                if (mProductKey != 0) {
+                    productos.Id = Long.parseLong(txtTitulo.getTag().toString());
+                }
                 productos.Estado = chkHabilitar.isChecked();
                 productos.Titulo = txtTitulo.getEditText().getText().toString();
                 productos.Presentacion = txtCantidad.getEditText().getText().toString() + " " + unidadmedidaSeleccionada;
@@ -226,33 +296,41 @@ public class RegistroProductosFragment extends Fragment {
                 productos.Venta = Double.parseDouble( txtVenta.getEditText().getText().toString() );
                 productos.Descuento = Double.parseDouble( txtDescuento.getEditText().getText().toString() );
 
-                Query query = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS )
-                        .child( FireBase.TABLAPRODUCTO );
 
-                query.addListenerForSingleValueEvent( new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<Productos> arrayList = new ArrayList<>();
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            Productos producto = userSnapshot.getValue( Productos.class );
-                            arrayList.add( producto );
+                if (mProductKey != 0) {
+                    updateProudcto( FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS ), productos );
+                    Limpiar();
+                    btnGuardar.setEnabled( true );
+                } else {
+                    Query query = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS )
+                            .child( FireBase.TABLAPRODUCTO );
+
+                    query.addListenerForSingleValueEvent( new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            ArrayList<Productos> arrayList = new ArrayList<>();
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                Productos producto = userSnapshot.getValue( Productos.class );
+                                arrayList.add( producto );
+                            }
+
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS );
+
+                            final DatabaseReference newRef = ref.child( FireBase.TABLAPRODUCTO ).push();
+                            productos.Id = arrayList.size() + 1;
+                            newRef.setValue( productos );
+
+                            btnGuardar.setEnabled( true );
+
+                            Limpiar();
+                            Toasty.success( getContext(), "El producto ha sido guardado", Toasty.LENGTH_LONG ).show();
                         }
 
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS );
-
-                        final DatabaseReference newRef = ref.child( FireBase.TABLAPRODUCTO ).push();
-                        productos.Id = arrayList.size() + 1 ;
-                        newRef.setValue( productos );
-
-                        btnGuardar.setEnabled( true );
-
-                        Limpiar();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                } );
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    } );
+                }
             }
         } );
 
@@ -268,6 +346,9 @@ public class RegistroProductosFragment extends Fragment {
         txtVenta.getEditText().setText( "0" );
         imgImagen.setImageDrawable( null );
         imgImagen.setVisibility( View.GONE );
+        mProductKey = 0;
+        btnEliminar.setText( "Limpiar" );
+        btnGuardar.setText( "Guardar" );
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -307,5 +388,14 @@ public class RegistroProductosFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void updateProudcto(DatabaseReference db, Productos producto) {
+        Map<String, Object> postValues = producto.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put( "/" + FireBase.TABLAPRODUCTO + "/" + Key, postValues );
+        db.updateChildren( childUpdates );
+
+        Toasty.info( getContext(), "El producto ha sido actualizado", Toasty.LENGTH_LONG ).show();
     }
 }

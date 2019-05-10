@@ -15,10 +15,10 @@ import java.util.List;
 
 public class AdaptadorCategoria extends RecyclerView.Adapter<ViewHolderCategoria> {
 
-    private List<Categorias> categorias;
+    private ArrayList<Categorias> categorias;
 
-    public AdaptadorCategoria( ) {
-        this.categorias = new ArrayList<>(  );
+    public AdaptadorCategoria(ArrayList<Categorias> categorias ) {
+        this.categorias = categorias;
     }
 
     @NonNull
@@ -38,13 +38,4 @@ public class AdaptadorCategoria extends RecyclerView.Adapter<ViewHolderCategoria
         return categorias.size();
     }
 
-    public void addAll(List<Categorias> newCategorias) {
-        int initialSize = categorias.size();
-        categorias.addAll(newCategorias);
-        notifyItemRangeInserted(initialSize, newCategorias.size());
-    }
-
-    public long getLastItemId() {
-        return categorias.get(categorias.size() - 1).getId();
-    }
 }

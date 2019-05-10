@@ -38,9 +38,19 @@
                 android:title="@string/mis_datos" />
 
         </menu>
+    </item>-->
+
+    <item android:title="@string/zona_proveedores">
+        <menu>
+            <item
+                android:id="@+id/nav_proveedores"
+                android:icon="@drawable/ic_account_box_black_24dp"
+                android:title="@string/proveedor" />
+
+        </menu>
     </item>
 
-    <item android:title="@string/soporte">
+    <!-- <item android:title="@string/soporte">
         <menu>
             <item
                 android:id="@+id/nav_contacto"

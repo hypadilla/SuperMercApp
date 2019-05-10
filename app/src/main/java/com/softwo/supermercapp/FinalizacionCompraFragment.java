@@ -156,9 +156,6 @@ public class FinalizacionCompraFragment extends Fragment {
                 Variables.pedido.setId( newRef.getKey() );
 
 
-
-
-
                 FirebaseInstanceId.getInstance().getInstanceId()
                         .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                             @Override
@@ -176,7 +173,7 @@ public class FinalizacionCompraFragment extends Fragment {
                                 databaseHelper.InsertarPedido( Variables.pedido );
                                 databaseHelper.InsertarDetallePedido( Variables.pedido.getDetallePedido() );
 
-                                Toasty.success( getContext(), "Gracias por confíar en nosotros, tu pedido ha sido enviado.", Toasty.LENGTH_LONG ).show();
+                                Toasty.success( getContext(), "Tu pedido ha sido recibido, en breve te contactamos.", Toasty.LENGTH_LONG ).show();
 
                                 Variables.pedido = new Pedidos();
                                 Variables.detallePedido = new ArrayList<>();
@@ -189,7 +186,7 @@ public class FinalizacionCompraFragment extends Fragment {
                                 Variables.pedido.setTotal( 0 );
                                 Variables.pedido.setRecibido( 0 );
                                 Variables.pedido.setDevuelto( 0 );
-                                Variables.pedido.setEstado( false );
+                                Variables.pedido.setEstado( 0 );
                                 Variables.pedido.setDetallePedido( Variables.detallePedido );
 
                                 FragmentManager fm = getActivity().getSupportFragmentManager();

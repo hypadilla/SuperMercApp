@@ -21,12 +21,12 @@ public class Pedidos {
     public double recibido;
     public double devuelto;
     public ArrayList<DetallePedido> detallePedido;
-    public boolean estado;
+    public int estado;
 
     public Pedidos() {
     }
 
-    public Pedidos(long _id, String id, double total, String fecha, Persona persona, String observacion, double recibido, double devuelto, ArrayList<DetallePedido> detallePedido, boolean estado) {
+    public Pedidos(long _id, String id, double total, String fecha, Persona persona, String observacion, double recibido, double devuelto, ArrayList<DetallePedido> detallePedido, int estado) {
         this._id =_id;
         this.id = id;
         this.total = total;
@@ -130,12 +130,12 @@ public class Pedidos {
     }
 
     @Exclude
-    public boolean isEstado() {
+    public int isEstado() {
         return estado;
     }
 
     @Exclude
-    public void setEstado(boolean estado) {
+    public void setEstado(int estado) {
         this.estado = estado;
     }
 

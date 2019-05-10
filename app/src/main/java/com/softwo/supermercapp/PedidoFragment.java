@@ -126,31 +126,17 @@ public class PedidoFragment extends Fragment {
         lnCargando = view.findViewById(R.id.lnCargando);
         ctDatos = view.findViewById( R.id.ctDatos );
 
+        ctDatos.setVisibility( View.VISIBLE );
+        lnCargando.setVisibility( View.GONE );
 
-        DatabaseReference tope = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS + "/" + FireBase.TABLACONFIGURACION + "/tope" );
-
-        tope.addValueEventListener( new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Variables.tope = new BigDecimal( dataSnapshot.getValue().toString() );
-                txtTope.setText( "Valor mínimo de compra: " + numberFormatCurrency.format( Variables.tope ) );
-
-                ctDatos.setVisibility( View.VISIBLE );
-                lnCargando.setVisibility( View.GONE );
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        } );
+        txtTope.setText( "Valor mínimo de compra: " + numberFormatCurrency.format( Variables.CONFIGURACION.Tope ) );
 
         btnComprar.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     //T0oasty.info( getContext(), Variables.tope.toString(), Toasty.LENGTH_LONG ).show();
-                    if ((new BigDecimal( numberFormatCurrency.parse( txtTotal.getText().toString() ).toString() )).compareTo( Variables.tope ) >= 0) {
+                    if ((new BigDecimal( numberFormatCurrency.parse( txtTotal.getText().toString() ).toString() )).compareTo( new BigDecimal(Variables.CONFIGURACION.Tope )) >= 0) {
                         FinalizacionCompraFragment finalizacionCompraFragment = new FinalizacionCompraFragment(  );
                         ((FragmentActivity) getActivity()).getSupportFragmentManager()
                                 .beginTransaction()
@@ -180,7 +166,7 @@ public class PedidoFragment extends Fragment {
                 Variables.pedido.setTotal( 0 );
                 Variables.pedido.setRecibido( 0 );
                 Variables.pedido.setDevuelto( 0 );
-                Variables.pedido.setEstado( false );
+                Variables.pedido.setEstado( 0 );
                 Variables.pedido.setDetallePedido( Variables.detallePedido );
 
                 mAdapter = new AdaptadorPedido( Variables.detallePedido, getContext(), txtTotal );

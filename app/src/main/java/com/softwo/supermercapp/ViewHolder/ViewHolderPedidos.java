@@ -56,7 +56,7 @@ public class ViewHolderPedidos extends RecyclerView.ViewHolder {
     }
 
     public void setData(final Pedidos pedidos) {
-        txtTitulo.setText( "Número pedido: " + pedidos.get_Id() );
+        txtTitulo.setText( "Pedido N°: " + pedidos.get_Id() );
         txtSerial.setText( "Serial: " + pedidos.getId() );
         txtFecha.setText( "Fecha: " + pedidos.getFecha() );
         txtVenta.setText( numberFormat.format( new BigDecimal( pedidos.getTotal() ) ) );
@@ -68,7 +68,6 @@ public class ViewHolderPedidos extends RecyclerView.ViewHolder {
         recyclerView.setHasFixedSize( true );
         recyclerView.setLayoutManager( mLayoutManagerDetallePedidos );
         mAdapterDetallePedidos = new AdaptadorPedido( pedidos.getDetallePedido(), recyclerView.getContext(), null );
-        //Toasty.info( recyclerView.getContext(), pedidos.getDetallePedido().size() + "", Toasty.LENGTH_SHORT ).show();
         recyclerView.setAdapter( mAdapterDetallePedidos );
 
         btnUp.setOnClickListener( new View.OnClickListener() {
@@ -81,5 +80,9 @@ public class ViewHolderPedidos extends RecyclerView.ViewHolder {
                 }
             }
         } );
+    }
+
+    private void Estado(int estado){
+
     }
 }

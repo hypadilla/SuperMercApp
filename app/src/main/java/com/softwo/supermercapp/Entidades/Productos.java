@@ -1,11 +1,15 @@
 package com.softwo.supermercapp.Entidades;
 
+import android.content.ContentValues;
 import android.media.Image;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.softwo.supermercapp.Sqlite.Contract.ProductoContract;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @IgnoreExtraProperties
 public class Productos {
@@ -254,5 +258,59 @@ public class Productos {
     @Exclude
     public void setEstado(boolean estado) {
         Estado = estado;
+    }
+
+    @Exclude
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put( ProductoContract.ProductoEntry.ID, Id);
+        values.put( ProductoContract.ProductoEntry.REFERENCIA, Referencia);
+        values.put( ProductoContract.ProductoEntry.CODIGO, Codigo);
+        values.put( ProductoContract.ProductoEntry.TITULO, Titulo);
+        values.put( ProductoContract.ProductoEntry.DESCRIPCION, Descripcion);
+        values.put( ProductoContract.ProductoEntry.CATEGORIA, Categoria);
+        values.put( ProductoContract.ProductoEntry.LINEA, Linea); 
+        values.put( ProductoContract.ProductoEntry.UBICACION, Ubicacion);
+        values.put( ProductoContract.ProductoEntry.PUESTO, Puesto);
+        values.put( ProductoContract.ProductoEntry.COSTO, Costo);
+        values.put( ProductoContract.ProductoEntry.MANEJAIVA, ManejaIVA);
+        values.put( ProductoContract.ProductoEntry.VENTA, Venta);
+        values.put( ProductoContract.ProductoEntry.STOCK, Stock);
+        values.put( ProductoContract.ProductoEntry.CANTIDADMINIMACOMPRA, CantidadMininaCompra);
+        values.put( ProductoContract.ProductoEntry.STOCKMINIMO, StockMinimo);
+        values.put( ProductoContract.ProductoEntry.IMAGEN, Imagen);
+        values.put( ProductoContract.ProductoEntry.DESCUENTO, Descuento);
+        values.put( ProductoContract.ProductoEntry.UNIDADMEDIDA, UnidadMedida);
+        values.put( ProductoContract.ProductoEntry.PRESENTACION, Presentacion);
+        values.put( ProductoContract.ProductoEntry.ESTADO, Estado);
+
+        return values;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put( ProductoContract.ProductoEntry.ID, Id);
+        result.put( ProductoContract.ProductoEntry.REFERENCIA, Referencia);
+        result.put( ProductoContract.ProductoEntry.CODIGO, Codigo);
+        result.put( ProductoContract.ProductoEntry.TITULO, Titulo);
+        result.put( ProductoContract.ProductoEntry.DESCRIPCION, Descripcion);
+        result.put( ProductoContract.ProductoEntry.CATEGORIA, Categoria);
+        result.put( ProductoContract.ProductoEntry.LINEA, Linea);
+        result.put( ProductoContract.ProductoEntry.UBICACION, Ubicacion);
+        result.put( ProductoContract.ProductoEntry.PUESTO, Puesto);
+        result.put( ProductoContract.ProductoEntry.COSTO, Costo);
+        result.put( ProductoContract.ProductoEntry.MANEJAIVA, ManejaIVA);
+        result.put( ProductoContract.ProductoEntry.VENTA, Venta);
+        result.put( ProductoContract.ProductoEntry.STOCK, Stock);
+        result.put( ProductoContract.ProductoEntry.CANTIDADMINIMACOMPRA, CantidadMininaCompra);
+        result.put( ProductoContract.ProductoEntry.STOCKMINIMO, StockMinimo);
+        result.put( ProductoContract.ProductoEntry.IMAGEN, Imagen);
+        result.put( ProductoContract.ProductoEntry.DESCUENTO, Descuento);
+        result.put( ProductoContract.ProductoEntry.UNIDADMEDIDA, UnidadMedida);
+        result.put( ProductoContract.ProductoEntry.PRESENTACION, Presentacion);
+        result.put( ProductoContract.ProductoEntry.ESTADO, Estado);
+
+        return result;
     }
 }

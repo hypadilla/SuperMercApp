@@ -14,9 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.softwo.supermercapp.FragmentsProveedores.ActualizarProductosFragment;
+import com.softwo.supermercapp.FragmentsProveedores.LoginFragment;
+import com.softwo.supermercapp.FragmentsProveedores.ProveedoresFragment;
+import com.softwo.supermercapp.FragmentsProveedores.RegistroProductosFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener,
@@ -24,8 +26,10 @@ public class MainActivity extends AppCompatActivity
         FinalizacionCompraFragment.OnFragmentInteractionListener, TodosProductosFragment.OnFragmentInteractionListener,
         PedidosFragment.OnFragmentInteractionListener, PromocionesFragment.OnFragmentInteractionListener,
         DatosPersonalesFragment.OnFragmentInteractionListener, FavoritosFragment.OnFragmentInteractionListener,
-        ContactoFragment.OnFragmentInteractionListener,
-        AyudaFragment.OnFragmentInteractionListener, ComentarioFragment.OnFragmentInteractionListener {
+        ContactoFragment.OnFragmentInteractionListener, RegistroProductosFragment.OnFragmentInteractionListener,
+        AyudaFragment.OnFragmentInteractionListener, ComentarioFragment.OnFragmentInteractionListener,
+        LoginFragment.OnFragmentInteractionListener, ActualizarProductosFragment.OnFragmentInteractionListener,
+        ProveedoresFragment.OnFragmentInteractionListener {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -126,6 +130,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_ayuda) {
             setFragment( 10 );
         }*/
+         else if (id == R.id.nav_proveedores){
+             setFragment( 11 );
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_layout );
         drawer.closeDrawer( GravityCompat.START );
@@ -217,6 +224,13 @@ public class MainActivity extends AppCompatActivity
                 if (currentFragment.getClass().equals( ayudaFragment.getClass() )) return;
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace( R.id.fragment, ayudaFragment ).addToBackStack( "AyudaFragment" );
+                fragmentTransaction.commit();
+                break;
+            case 11:
+                LoginFragment loginFragment = new LoginFragment();
+                if (currentFragment.getClass().equals( loginFragment.getClass() )) return;
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace( R.id.fragment, loginFragment ).addToBackStack( "LoginFragment" );
                 fragmentTransaction.commit();
                 break;
         }

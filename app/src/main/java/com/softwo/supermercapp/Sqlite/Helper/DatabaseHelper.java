@@ -8,10 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.softwo.supermercapp.Entidades.DetallePedido;
 import com.softwo.supermercapp.Entidades.Favoritos;
 import com.softwo.supermercapp.Entidades.Pedidos;
+import com.softwo.supermercapp.Entidades.Productos;
 import com.softwo.supermercapp.Globales.Variables;
 import com.softwo.supermercapp.Sqlite.Contract.DetallePedidoContract;
 import com.softwo.supermercapp.Sqlite.Contract.FavoritoContract;
 import com.softwo.supermercapp.Sqlite.Contract.PedidosContract;
+import com.softwo.supermercapp.Sqlite.Contract.ProductoContract;
 
 import java.util.ArrayList;
 
@@ -51,6 +53,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + DetallePedidoContract.DetallePedidoEntry.IDPRODUCTO + " INTEGER,"
                 + DetallePedidoContract.DetallePedidoEntry.CANTIDAD + " REAL,"
                 + DetallePedidoContract.DetallePedidoEntry.VENTA + " REAL)" );
+
+        sqLiteDatabase.execSQL( "CREATE TABLE " + ProductoContract.ProductoEntry.TABLE_NAME + " ("
+                + ProductoContract.ProductoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + ProductoContract.ProductoEntry.ID + " INTEGER,"
+                + ProductoContract.ProductoEntry.REFERENCIA + " TEXT,"
+                + ProductoContract.ProductoEntry.CODIGO + " TEXT,"
+                + ProductoContract.ProductoEntry.TITULO + " TEXT,"
+                + ProductoContract.ProductoEntry.DESCRIPCION + " TEXT,"
+                + ProductoContract.ProductoEntry.CATEGORIA + " TEXT,"
+                + ProductoContract.ProductoEntry.LINEA + " TEXT,"
+                + ProductoContract.ProductoEntry.UBICACION + " TEXT,"
+                + ProductoContract.ProductoEntry.PUESTO + " TEXT,"
+                + ProductoContract.ProductoEntry.COSTO + " REAL,"
+                + ProductoContract.ProductoEntry.MANEJAIVA + " INTEGER,"
+                + ProductoContract.ProductoEntry.VENTA + " REAL,"
+                + ProductoContract.ProductoEntry.STOCK + " REAL,"
+                + ProductoContract.ProductoEntry.CANTIDADMINIMACOMPRA + " REAL,"
+                + ProductoContract.ProductoEntry.STOCKMINIMO + " REAL,"
+                + ProductoContract.ProductoEntry.IMAGEN + " TEXT,"
+                + ProductoContract.ProductoEntry.DESCUENTO + " REAL,"
+                + ProductoContract.ProductoEntry.UNIDADMEDIDA + " TEXT,"
+                + ProductoContract.ProductoEntry.PRESENTACION + " TEXT,"
+                + ProductoContract.ProductoEntry.ESTADO + " INTEGER)" );
     }
 
     @Override
@@ -83,6 +108,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + DetallePedidoContract.DetallePedidoEntry.IDPRODUCTO + " INTEGER,"
                 + DetallePedidoContract.DetallePedidoEntry.CANTIDAD + " REAL,"
                 + DetallePedidoContract.DetallePedidoEntry.VENTA + " REAL)" );
+        sqLiteDatabase.execSQL( "CREATE TABLE " + ProductoContract.ProductoEntry.TABLE_NAME + " ("
+                + ProductoContract.ProductoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + ProductoContract.ProductoEntry.ID + " INTEGER,"
+                + ProductoContract.ProductoEntry.REFERENCIA + " TEXT,"
+                + ProductoContract.ProductoEntry.CODIGO + " TEXT,"
+                + ProductoContract.ProductoEntry.TITULO + " TEXT,"
+                + ProductoContract.ProductoEntry.DESCRIPCION + " TEXT,"
+                + ProductoContract.ProductoEntry.CATEGORIA + " TEXT,"
+                + ProductoContract.ProductoEntry.LINEA + " TEXT,"
+                + ProductoContract.ProductoEntry.UBICACION + " TEXT,"
+                + ProductoContract.ProductoEntry.PUESTO + " TEXT,"
+                + ProductoContract.ProductoEntry.COSTO + " REAL,"
+                + ProductoContract.ProductoEntry.MANEJAIVA + " INTEGER,"
+                + ProductoContract.ProductoEntry.VENTA + " REAL,"
+                + ProductoContract.ProductoEntry.STOCK + " REAL,"
+                + ProductoContract.ProductoEntry.CANTIDADMINIMACOMPRA + " REAL,"
+                + ProductoContract.ProductoEntry.STOCKMINIMO + " REAL,"
+                + ProductoContract.ProductoEntry.IMAGEN + " TEXT,"
+                + ProductoContract.ProductoEntry.DESCUENTO + " REAL,"
+                + ProductoContract.ProductoEntry.UNIDADMEDIDA + " TEXT,"
+                + ProductoContract.ProductoEntry.PRESENTACION + " TEXT,"
+                + ProductoContract.ProductoEntry.ESTADO + " INTEGER)" );
     }
 
     public void InsertarFavoritos(SQLiteDatabase sqLiteDatabase, Favoritos favorito) {
@@ -224,4 +271,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return false;
     }
+
+    public void InsertarProductos(ArrayList<Productos> productos) {
+
+        for (Productos producto :
+                productos) {
+            Variables.databaseHelper.getWritableDatabase().insert(
+                    ProductoContract.ProductoEntry.TABLE_NAME,
+                    null,
+                    producto.toContentValues() );
+        }
+    }
+
+    public void InsertarProducto(Productos producto) {
+        Variables.databaseHelper.getWritableDatabase().insert(
+                ProductoContract.ProductoEntry.TABLE_NAME,
+                null,
+                producto.toContentValues() );
+    }
 }
+

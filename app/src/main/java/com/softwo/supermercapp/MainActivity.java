@@ -13,12 +13,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.softwo.supermercapp.Constantes.FireBase;
+import com.softwo.supermercapp.Entidades.Configuracion;
 import com.softwo.supermercapp.FragmentsProveedores.ActualizarProductosFragment;
 import com.softwo.supermercapp.FragmentsProveedores.LoginFragment;
 import com.softwo.supermercapp.FragmentsProveedores.ProveedoresFragment;
 import com.softwo.supermercapp.FragmentsProveedores.RegistroProductosFragment;
+import com.softwo.supermercapp.Globales.Variables;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener,
@@ -33,11 +44,21 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    MenuItem menuItemCart;
+    ImageButton btnMenuCart;
+    TextView txtCountCart;
+    int mCountCart = 0;
+
+    TextView MarqueeText;
+
+    Query queryConfiguracion;
+    ValueEventListener valueEventListenerConfiguracion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
 
-       // GoogleApiAvailability.makeGooglePlayServicesAvailable(this);
+        // GoogleApiAvailability.makeGooglePlayServicesAvailable(this);
 
         setContentView( R.layout.activity_main );
         Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
@@ -52,6 +73,28 @@ public class MainActivity extends AppCompatActivity
             }
         } );*/
 
+        MarqueeText = findViewById( R.id.MarqueeText );
+
+        queryConfiguracion = FirebaseDatabase.getInstance().getReference( FireBase.BASEDATOS )
+                .child( FireBase.TABLACONFIGURACION );
+
+        valueEventListenerConfiguracion = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Variables.CONFIGURACION = dataSnapshot.getValue( Configuracion.class );
+
+                MarqueeText.setText( "Hola bienvenidos, las entregas empiezan a partir de las " + Variables.CONFIGURACION.HoraInicio
+                        + ", y finalizan a las " + Variables.CONFIGURACION.HoraFin
+                        + " Los pedidos fuera de este intervalo, serán entregados al día siguiente." );
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+
+        queryConfiguracion.addValueEventListener( valueEventListenerConfiguracion );
+
         DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_layout );
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close );
@@ -63,6 +106,18 @@ public class MainActivity extends AppCompatActivity
 
         //First start (Inbox Fragment)
         setFragment( 0 );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        queryConfiguracion.addValueEventListener( valueEventListenerConfiguracion );
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        queryConfiguracion.removeEventListener( valueEventListenerConfiguracion );
     }
 
     @Override
@@ -84,7 +139,24 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate( R.menu.main, menu );
-        return true;
+
+        menuItemCart = menu.findItem( R.id.action_cartshop );
+
+        View action = menuItemCart.getActionView();
+
+        if (action != null) {
+            btnMenuCart = action.findViewById( R.id.imgCart );
+            txtCountCart = action.findViewById( R.id.txtCart );
+        }
+
+        btnMenuCart.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFragment( 3 );
+            }
+        } );
+
+        return super.onCreateOptionsMenu( menu );
     }
 
     @Override
@@ -129,9 +201,8 @@ public class MainActivity extends AppCompatActivity
             setFragment( 9 );
         } else if (id == R.id.nav_ayuda) {
             setFragment( 10 );
-        }*/
-         else if (id == R.id.nav_proveedores){
-             setFragment( 11 );
+        }*/ else if (id == R.id.nav_proveedores) {
+            setFragment( 11 );
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_layout );
@@ -167,7 +238,7 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.commit();
                 break;
             case 2:
-                TodosProductosFragment todosProductosFragment = new TodosProductosFragment(  );
+                TodosProductosFragment todosProductosFragment = new TodosProductosFragment();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace( R.id.fragment, todosProductosFragment ).addToBackStack( "TodosProductosFragment" );
                 fragmentTransaction.commit();
@@ -180,7 +251,7 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.commit();
                 break;
             case 4:
-                PromocionesFragment promocionesFragment =  new PromocionesFragment();
+                PromocionesFragment promocionesFragment = new PromocionesFragment();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace( R.id.fragment, promocionesFragment ).addToBackStack( "PromocionesFragment" );
                 fragmentTransaction.commit();
@@ -193,7 +264,7 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.commit();
                 break;
             case 6:
-                FavoritosFragment favoritosFragment = new  FavoritosFragment( );
+                FavoritosFragment favoritosFragment = new FavoritosFragment();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace( R.id.fragment, favoritosFragment ).addToBackStack( "FavoritosFragment" );
                 fragmentTransaction.commit();
@@ -234,5 +305,20 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.commit();
                 break;
         }
+    }
+
+    public void IncrementarMenu() {
+        mCountCart++;
+        txtCountCart.setText( String.valueOf( mCountCart ) );
+    }
+
+    public void DisminuirMenu() {
+        mCountCart--;
+        txtCountCart.setText( String.valueOf( mCountCart ) );
+    }
+
+    public void resetMenu() {
+        mCountCart = 0;
+        txtCountCart.setText( String.valueOf( mCountCart ) );
     }
 }

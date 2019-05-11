@@ -1,6 +1,8 @@
 package com.softwo.supermercapp.Adaptadores;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import com.softwo.supermercapp.Entidades.DetallePedido;
 import com.softwo.supermercapp.Entidades.Favoritos;
 import com.softwo.supermercapp.Entidades.Productos;
 import com.softwo.supermercapp.Globales.Variables;
+import com.softwo.supermercapp.MainActivity;
 import com.softwo.supermercapp.R;
 import com.softwo.supermercapp.Sqlite.Helper.DatabaseHelper;
 import com.softwo.supermercapp.ViewHolder.ViewHolderProducto;
@@ -121,7 +124,7 @@ public class AdaptadorProductos extends RecyclerView.Adapter<ViewHolderProducto>
                     e.printStackTrace();
                 }
                 Variables.pedido.setTotal( Total.doubleValue() );
-
+                ((MainActivity) contexto).IncrementarMenu();
             }
         } );
 
@@ -145,6 +148,8 @@ public class AdaptadorProductos extends RecyclerView.Adapter<ViewHolderProducto>
                     e.printStackTrace();
                 }
                 Variables.pedido.setTotal( Total.doubleValue() );
+
+                ((MainActivity) contexto).IncrementarMenu();
             }
         } );
 
@@ -178,6 +183,7 @@ public class AdaptadorProductos extends RecyclerView.Adapter<ViewHolderProducto>
                     e.printStackTrace();
                 }
                 Variables.pedido.setTotal( Total.doubleValue() );
+                ((MainActivity) contexto).DisminuirMenu();
             }
         } );
 

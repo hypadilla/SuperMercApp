@@ -158,6 +158,7 @@ public class PedidoFragment extends Fragment {
                 Variables.pedido = new Pedidos();
                 Variables.detallePedido = new ArrayList<>();
 
+                ((MainActivity) getActivity()).resetMenu();
                 Variables.pedido.set_Id( 0 );
                 Variables.pedido.setId( "" );
                 Variables.pedido.setFecha( simpleDateFormat.format( new Date(  ) ) );

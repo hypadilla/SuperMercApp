@@ -25,10 +25,17 @@ public class Variables {
 
     public static ArrayList<UnidadMedida> LISTAUNIDADMEDIDA;
 
-    public static ArrayList<Productos> LISTAPRODUCTOS;
-    public static ArrayList<Productos> LISTAPRODUCTOSPROMOCIONES;
-    public static ArrayList<Productos> LISTAPRODUCTOSFAVORITOS;
-
     public static Configuracion CONFIGURACION;
 
+    public Boolean isOnlineNet() {
+        try {
+            Process p = java.lang.Runtime.getRuntime().exec( "ping -c 1 www.google.es" );
+            int val = p.waitFor();
+            boolean reachable = (val == 0);
+            return reachable;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
